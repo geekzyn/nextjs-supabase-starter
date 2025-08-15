@@ -2,16 +2,16 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 const AUTH_CONFIG = {
-  PUBLIC_ROUTES: ["/login", "/auth"]
+  PUBLIC_ROUTES: ["/auth/sign-in", "/auth/sign-up", "/auth/sign-up-success", "/auth/forgot-password", "/auth/error", "/auth/confirm"]
 }
 
 export async function middleware(request: NextRequest) {
   const { response, user } = await updateSession(request);
   
   if (!user && !AUTH_CONFIG.PUBLIC_ROUTES.includes(request.nextUrl.pathname)) {
-    // no user and route is not public, potentially respond by redirecting the user to the login page
+    // no user and route is not public, potentially respond by redirecting the user to the sign-in page
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/auth/sign-in'
     return NextResponse.redirect(url)
   }
 
